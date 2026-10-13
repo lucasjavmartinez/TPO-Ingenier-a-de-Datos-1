@@ -2,6 +2,13 @@
 IF DB_ID('TorneosEsports') IS NULL
     CREATE DATABASE TorneosEsports;
 
+/* ¡¡¡¡IMPORTANTE!!!! */
+/* ¡¡¡¡IMPORTANTE!!!! SOLO CORRER ESTO EN CASO DE SER NECESARIO PORQUE TIRA TODA LA BASE DE DATOS */
+IF DB_ID('TorneosEsports') IS NOT NULL
+BEGIN
+    ALTER DATABASE TorneosEsports SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE TorneosEsports;
+END
 
 /* Creacion de la tabla para un juego */
 CREATE TABLE Juego (
@@ -37,10 +44,9 @@ CREATE TABLE Integrante_Equipo (
     id_equipo      INT  NOT NULL CONSTRAINT FK_Integrante_Equipo_Equipo  FOREIGN KEY REFERENCES Equipo(id_equipo),
     id_jugador     INT  NOT NULL CONSTRAINT FK_Integrante_Equipo_Jugador FOREIGN KEY REFERENCES Jugador(id_jugador),
     fecha_ingreso  DATE NOT NULL CONSTRAINT DF_Integrante_ingreso DEFAULT (CAST(GETDATE() AS DATE)),
-    fecha_salida   DATE NULL,
 
-    CONSTRAINT UQ_Integrante UNIQUE (id_equipo, id_jugador, fecha_ingreso),
-    CONSTRAINT CK_Integrante_fechas CHECK (fecha_salida IS NULL OR fecha_salida >= fecha_ingreso)
+    CONSTRAINT UQ_Integrante_Jugador UNIQUE (id_jugador)
+
 );
 
 CREATE TABLE Persona (
@@ -69,12 +75,12 @@ CREATE TABLE Arbitro (
 CREATE TABLE Torneo (
     id_torneo         INT IDENTITY(1,1) CONSTRAINT PK_Torneo PRIMARY KEY,
     id_juego          INT NOT NULL CONSTRAINT FK_Torneo_Juego       FOREIGN KEY REFERENCES Juego(id_juego),
-    id_organizador    INT NOT NULL CONSTRAINT FK_Torneo_Organizador FOREIGN KEY REFERENCES Organizador(id_organizador),
+    id_organizador    INT NOT NULL CONSTRAINT FK_Torneo_Organizador FOREIGN KEY REFERENCES Organizador(id_persona),
     nombre            VARCHAR(100) NOT NULL,
     fecha_inicio      DATE NOT NULL,
     fecha_fin         DATE NULL,
     cantidad_equipos  INT  NOT NULL,   
-    premio_base       DECIMAL(12,2) NOT NULL,  /* aca es donde se calculan el premio del 1.º; 2.º y MVP */
+    premio_base       DECIMAL(12,2) NOT NULL, 
     estado            VARCHAR(15) NOT NULL CONSTRAINT DF_Torneo_estado DEFAULT ('Inscripcion'),
 
     CONSTRAINT UQ_Torneo_nombre_inicio UNIQUE (nombre, fecha_inicio),
@@ -98,7 +104,7 @@ CREATE TABLE Inscripcion (
     CONSTRAINT CK_Inscripcion_estado CHECK (estado IN ('Activo','Eliminado','Descalificado')),
     CONSTRAINT CK_Inscripcion_descalificacion CHECK (
         (estado = 'Descalificado' AND motivo_descalificacion IS NOT NULL AND fecha_descalificacion IS NOT NULL)
-        OR (estado <> 'Descalificado' AND motivo_descalificacion IS NULL AND fecha_descalificacion IS NULL)
+        OR (estado <> 'Descalificado' AND motivo_descalificacion IS NULL AND fecha_descalificacion IS NULL))
 );
 
 
@@ -164,4 +170,3 @@ CREATE TABLE Pago_Premio (
     CONSTRAINT CK_Pago_tipo  CHECK (tipo IN ('1er puesto','2do puesto','MVP')),
     CONSTRAINT CK_Pago_monto CHECK (monto > 0)
 );
-GO
