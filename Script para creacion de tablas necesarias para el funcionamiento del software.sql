@@ -4,6 +4,7 @@ IF DB_ID('TorneosEsports') IS NULL
     CREATE DATABASE TorneosEsports;
 
 
+/* Creacion de la tabla para un juego */
 CREATE TABLE Juego (
     id_juego     INT IDENTITY(1,1) CONSTRAINT PK_Juego PRIMARY KEY,
     nombre       VARCHAR(60)  NOT NULL CONSTRAINT UQ_Juego_nombre UNIQUE,
@@ -128,8 +129,10 @@ CREATE TABLE Partido (
 CREATE TABLE Alineacion_Partido (
     id_partido  INT NOT NULL CONSTRAINT FK_Alineacion_Partido FOREIGN KEY REFERENCES Partido(id_partido),
     id_jugador  INT NOT NULL CONSTRAINT FK_Alineacion_Jugador FOREIGN KEY REFERENCES Jugador(id_jugador),
+    puntos_jugador INT NULL,
     id_equipo   INT NOT NULL CONSTRAINT FK_Alineacion_Equipo  FOREIGN KEY REFERENCES Equipo(id_equipo),
-    CONSTRAINT PK_Alineacion_Partido PRIMARY KEY (id_partido, id_jugador)
+    CONSTRAINT PK_Alineacion_Partido PRIMARY KEY (id_partido, id_jugador),
+    CONSTRAINT CK_Alineacion_puntos CHECK (puntos_jugador IS NULL OR puntos_jugador >= 0)
 );
 
 
