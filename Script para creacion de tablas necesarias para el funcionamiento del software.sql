@@ -4,11 +4,13 @@ IF DB_ID('TorneosEsports') IS NULL
 
 /* 　　IMPORTANTE!!!! */
 /* 　　IMPORTANTE!!!! SOLO CORRER ESTO EN CASO DE SER NECESARIO PORQUE TIRA TODA LA BASE DE DATOS */
+/*
 IF DB_ID('TorneosEsports') IS NOT NULL
 BEGIN
     ALTER DATABASE TorneosEsports SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
     DROP DATABASE TorneosEsports;
 END
+*/
 
 /* Creacion de la tabla para un juego */
 CREATE TABLE Juego (
