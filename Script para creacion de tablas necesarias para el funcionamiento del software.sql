@@ -2,8 +2,8 @@
 IF DB_ID('TorneosEsports') IS NULL
     CREATE DATABASE TorneosEsports;
 
-/* ¡¡¡¡IMPORTANTE!!!! */
-/* ¡¡¡¡IMPORTANTE!!!! SOLO CORRER ESTO EN CASO DE SER NECESARIO PORQUE TIRA TODA LA BASE DE DATOS */
+/* ï¿½ï¿½ï¿½ï¿½IMPORTANTE!!!! */
+/* ï¿½ï¿½ï¿½ï¿½IMPORTANTE!!!! SOLO CORRER ESTO EN CASO DE SER NECESARIO PORQUE TIRA TODA LA BASE DE DATOS */
 /*
 IF DB_ID('TorneosEsports') IS NOT NULL
 BEGIN
@@ -116,7 +116,7 @@ CREATE TABLE Partido (
     id_partido            INT IDENTITY(1,1) CONSTRAINT PK_Partido PRIMARY KEY,
     id_torneo             INT NOT NULL CONSTRAINT FK_Partido_Torneo FOREIGN KEY REFERENCES Torneo(id_torneo),
     nro_fase              INT NOT NULL,   -- 1 = primera fase; la mayor = final
-    nro_llave             INT NOT NULL,   -- posición del cruce dentro de la fase
+    nro_llave             INT NOT NULL,   -- posiciï¿½n del cruce dentro de la fase
     id_arbitro            INT NULL CONSTRAINT FK_Partido_Arbitro FOREIGN KEY REFERENCES Arbitro(id_persona),
     id_equipo_a           INT NULL CONSTRAINT FK_Partido_EquipoA FOREIGN KEY REFERENCES Equipo(id_equipo),
     id_equipo_b           INT NULL CONSTRAINT FK_Partido_EquipoB FOREIGN KEY REFERENCES Equipo(id_equipo),
