@@ -7,50 +7,49 @@ INSERT INTO Juego (nombre, descripcion)
 VALUES ('League of Legends', 'MOBA 5v5 competitivo desarrollado por Riot Games');
 GO
 
-INSERT INTO Persona (dni, nombre, apellido, mail, fecha_nacimiento) VALUES 
-('11111111', 'John', 'Needham', 'jneedham@riotgames.com', '1980-05-10'), 
-('22222222', 'Jeong-gyun', 'Kim', 'kkoma@t1.gg', '1985-12-23'),         
-('33333333', 'Dong-bin', 'Go', 'score@geng.gg', '1992-07-08'),          
-('44444444', 'Romain', 'Bigeard', 'romain@g2esports.com', '1989-11-30'),
-('55555550', 'Patrik', 'Sattermon', 'carn@fnatic.com', '1985-04-12'),
-('55555555', 'Steve', 'Arhancet', 'steve@teamliquid.com', '1981-04-15'),
-('99999999', 'Marc', 'Merrill', 'marc@riotgames.com', '1980-08-22'),
-('66666661', 'Woo-je', 'Choi', 'zeus@t1.gg', '2004-01-31'),
-('66666662', 'Hyeon-joon', 'Moon', 'oner@t1.gg', '2002-12-24'),
-('66666663', 'Sang-hyeok', 'Lee', 'faker@t1.gg', '1996-05-07'),
-('66666664', 'Min-hyeong', 'Lee', 'gumayusi@t1.gg', '2002-02-06'),
-('66666665', 'Min-seok', 'Ryu', 'keria@t1.gg', '2002-10-14'),
-('77777771', 'Hyeon-joon', 'Choi', 'doran@geng.gg', '2000-07-22'),
-('77777772', 'Wang-ho', 'Han', 'peanut@geng.gg', '1998-02-03'),
-('77777773', 'Ji-hoon', 'Jeong', 'chovy@geng.gg', '2001-03-03'),
-('77777774', 'Su-hwan', 'Kim', 'peyz@geng.gg', '2005-12-05'),
-('77777775', 'Hwan-joong', 'Yoo', 'delight@geng.gg', '2002-09-12'),
-('88888881', 'Sergen', 'Celik', 'brokenblade@g2.com', '2000-01-19'),
-('88888882', 'Martin', 'Sundelin', 'yike@g2.com', '2000-11-11'),
-('88888883', 'Rasmus', 'Winther', 'caps@g2.com', '1999-11-17'),
-('88888884', 'Steven', 'Liv', 'hanssama@g2.com', '1999-09-02'),
-('88888885', 'Mihael', 'Mehle', 'mikyx@g2.com', '1998-11-02'),
-('98888881', 'Oscar', 'Munoz', 'oscarinin@fnatic.com', '2003-05-15'),
-('98888882', 'Ivan', 'Martin', 'razork@fnatic.com', '2000-10-07'),
-('98888883', 'Marek', 'Brazda', 'humanoid@fnatic.com', '2000-03-14'),
-('98888884', 'Oh', 'Taek', 'noah@fnatic.com', '2001-10-04'),
-('98888885', 'Yoon', 'Se-jun', 'jun@fnatic.com', '2000-08-20');
+--organizador
+EXEC sp_insertPersonal '11111111', 'John', 'Needham', 'jneedham@riotgames.com', '1980-05-10', 'Organizador';
 GO
 
-INSERT INTO Organizador (id_persona) VALUES (1);
+-- managers
+EXEC sp_insertPersonal '22222222', 'Jeong-gyun', 'Kim', 'kkoma@t1.gg', '1985-12-23', 'Manager';
+EXEC sp_insertPersonal '33333333', 'Dong-bin', 'Go', 'score@geng.gg', '1992-07-08', 'Manager';
+EXEC sp_insertPersonal '44444444', 'Romain', 'Bigeard', 'romain@g2esports.com', '1989-11-30', 'Manager';
+EXEC sp_insertPersonal '55555550', 'Patrik', 'Sattermon', 'carn@fnatic.com', '1985-04-12', 'Manager';
+EXEC sp_insertPersonal '55555555', 'Steve', 'Arhancet', 'steve@teamliquid.com', '1981-04-15', 'Manager';
 GO
 
-INSERT INTO Manager (id_persona) VALUES (2), (3), (4), (5), (6);
+--arbitro
+EXEC sp_insertPersonal '99999999', 'Marc', 'Merrill', 'marc@riotgames.com', '1980-08-22', 'Arbitro';
 GO
 
-INSERT INTO Arbitro (id_persona) VALUES (7);
-GO
+--jugadores t1
+EXEC sp_insertarJugador '66666661', 'Woo-je', 'Choi', 'zeus@t1.gg', '2004-01-31', 'Zeus';
+EXEC sp_insertarJugador '66666662', 'Hyeon-joon', 'Moon', 'oner@t1.gg', '2002-12-24', 'Oner';
+EXEC sp_insertarJugador '66666663', 'Sang-hyeok', 'Lee', 'faker@t1.gg', '1996-05-07', 'Faker';
+EXEC sp_insertarJugador '66666664', 'Min-hyeong', 'Lee', 'gumayusi@t1.gg', '2002-02-06', 'Gumayusi';
+EXEC sp_insertarJugador '66666665', 'Min-seok', 'Ryu', 'keria@t1.gg', '2002-10-14', 'Keria';
 
-INSERT INTO Jugador (id_persona, nick) VALUES 
-(8, 'Zeus'), (9, 'Oner'), (10, 'Faker'), (11, 'Gumayusi'), (12, 'Keria'),
-(13, 'Doran'), (14, 'Peanut'), (15, 'Chovy'), (16, 'Peyz'), (17, 'Delight'),
-(18, 'BrokenBlade'), (19, 'Yike'), (20, 'Caps'), (21, 'Hans Sama'), (22, 'Mikyx'),
-(23, 'Oscarinin'), (24, 'Razork'), (25, 'Humanoid'), (26, 'Noah'), (27, 'Jun');
+--jugadores geng
+EXEC sp_insertarJugador '77777771', 'Hyeon-joon', 'Choi', 'doran@geng.gg', '2000-07-22', 'Doran';
+EXEC sp_insertarJugador '77777772', 'Wang-ho', 'Han', 'peanut@geng.gg', '1998-02-03', 'Peanut';
+EXEC sp_insertarJugador '77777773', 'Ji-hoon', 'Jeong', 'chovy@geng.gg', '2001-03-03', 'Chovy';
+EXEC sp_insertarJugador '77777774', 'Su-hwan', 'Kim', 'peyz@geng.gg', '2005-12-05', 'Peyz';
+EXEC sp_insertarJugador '77777775', 'Hwan-joong', 'Yoo', 'delight@geng.gg', '2002-09-12', 'Delight';
+
+--jugadores g2
+EXEC sp_insertarJugador '88888881', 'Sergen', 'Celik', 'brokenblade@g2.com', '2000-01-19', 'BrokenBlade';
+EXEC sp_insertarJugador '88888882', 'Martin', 'Sundelin', 'yike@g2.com', '2000-11-11', 'Yike';
+EXEC sp_insertarJugador '88888883', 'Rasmus', 'Winther', 'caps@g2.com', '1999-11-17', 'Caps';
+EXEC sp_insertarJugador '88888884', 'Steven', 'Liv', 'hanssama@g2.com', '1999-09-02', 'Hans Sama';
+EXEC sp_insertarJugador '88888885', 'Mihael', 'Mehle', 'mikyx@g2.com', '1998-11-02', 'Mikyx';
+
+--jugadores fnatic
+EXEC sp_insertarJugador '98888881', 'Oscar', 'Munoz', 'oscarinin@fnatic.com', '2003-05-15', 'Oscarinin';
+EXEC sp_insertarJugador '98888882', 'Ivan', 'Martin', 'razork@fnatic.com', '2000-10-07', 'Razork';
+EXEC sp_insertarJugador '98888883', 'Marek', 'Brazda', 'humanoid@fnatic.com', '2000-03-14', 'Humanoid';
+EXEC sp_insertarJugador '98888884', 'Oh', 'Taek', 'noah@fnatic.com', '2001-10-04', 'Noah';
+EXEC sp_insertarJugador '98888885', 'Yoon', 'Se-jun', 'jun@fnatic.com', '2000-08-20', 'Jun';
 GO
 
 INSERT INTO Equipo (id_manager, nombre, fecha_alta) VALUES 
