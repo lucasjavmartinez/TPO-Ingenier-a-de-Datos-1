@@ -18,6 +18,7 @@ CREATE TABLE Persona (
     apellido    VARCHAR(60)  NOT NULL,
     mail        VARCHAR(100) NOT NULL CONSTRAINT UQ_Persona_mail UNIQUE,
     fecha_nacimiento DATE NOT NULL,
+    activo BIT NOT NULL CONSTRAINT df_personaActiva DEFAULT(1),
 
     CONSTRAINT CK_Persona_mail CHECK (mail LIKE '%_@_%._%'),
     CONSTRAINT CK_Persona_fnac CHECK (fecha_nacimiento <= CAST(GETDATE() AS DATE))--agregar luego en un trigger o sp un limite minimo de edad para inscribirse
@@ -25,20 +26,20 @@ CREATE TABLE Persona (
 CREATE TABLE Organizador (
     id_persona  INT NOT NULL CONSTRAINT PK_Organizador PRIMARY KEY,
     
-    CONSTRAINT FK_Organizador_Persona FOREIGN KEY (id_persona) REFERENCES Persona(id_persona)
+    CONSTRAINT FK_Organizador_Persona FOREIGN KEY (id_persona) REFERENCES Persona(id_persona) ON DELETE CASCADE 
 );
 
 CREATE TABLE Manager (
     id_persona INT NOT NULL CONSTRAINT PK_Manager PRIMARY KEY,
 
-    CONSTRAINT FK_Manager_Persona FOREIGN KEY (id_persona) REFERENCES Persona(id_persona)
+    CONSTRAINT FK_Manager_Persona FOREIGN KEY (id_persona) REFERENCES Persona(id_persona) ON DELETE CASCADE
 
 );
 
 CREATE TABLE Arbitro (
     id_persona  INT NOT NULL CONSTRAINT PK_Arbitro PRIMARY KEY,
     
-    CONSTRAINT FK_Arbitro_Persona FOREIGN KEY (id_persona) REFERENCES Persona(id_persona)
+    CONSTRAINT FK_Arbitro_Persona FOREIGN KEY (id_persona) REFERENCES Persona(id_persona) ON DELETE CASCADE
 );
 
 --el cambio aca es que hacemos que jugador herede de Persona
@@ -47,7 +48,7 @@ CREATE TABLE Jugador (
     id_persona INT NOT NULL CONSTRAINT PK_Jugador PRIMARY KEY,
     nick              VARCHAR(30)  NOT NULL CONSTRAINT UQ_Jugador_nick UNIQUE,
 
-    CONSTRAINT FK_Jugador_Persona FOREIGN KEY (id_persona) REFERENCES Persona(id_persona)
+    CONSTRAINT FK_Jugador_Persona FOREIGN KEY (id_persona) REFERENCES Persona(id_persona) ON DELETE CASCADE
 );
 
 CREATE TABLE Equipo (
@@ -60,8 +61,8 @@ CREATE TABLE Equipo (
 
 CREATE TABLE Integrante_Equipo (
     id_integrante  INT IDENTITY(1,1) CONSTRAINT PK_Integrante_Equipo PRIMARY KEY,
-    id_equipo      INT  NOT NULL CONSTRAINT FK_Integrante_Equipo_Equipo  FOREIGN KEY REFERENCES Equipo(id_equipo),
-    id_jugador     INT  NOT NULL CONSTRAINT FK_Integrante_Equipo_Jugador FOREIGN KEY REFERENCES Jugador(id_persona),
+    id_equipo      INT  NOT NULL CONSTRAINT FK_Integrante_Equipo_Equipo  FOREIGN KEY REFERENCES Equipo(id_equipo) ON DELETE CASCADE,
+    id_jugador     INT  NOT NULL CONSTRAINT FK_Integrante_Equipo_Jugador FOREIGN KEY REFERENCES Jugador(id_persona) ON DELETE CASCADE,
     fecha_ingreso  DATE NOT NULL CONSTRAINT DF_Integrante_ingreso DEFAULT (CAST(GETDATE() AS DATE)),
     fecha_egreso   DATE NULL --esto para tener un historial mas detallado
 
@@ -94,8 +95,8 @@ CREATE TABLE Torneo (
 
 CREATE TABLE Inscripcion (
     id_inscripcion     INT IDENTITY(1,1) CONSTRAINT PK_Inscripcion PRIMARY KEY,
-    id_torneo          INT NOT NULL CONSTRAINT FK_Inscripcion_Torneo FOREIGN KEY REFERENCES Torneo(id_torneo),
-    id_equipo          INT NOT NULL CONSTRAINT FK_Inscripcion_Equipo FOREIGN KEY REFERENCES Equipo(id_equipo),
+    id_torneo          INT NOT NULL CONSTRAINT FK_Inscripcion_Torneo FOREIGN KEY REFERENCES Torneo(id_torneo) ON DELETE CASCADE,
+    id_equipo          INT NOT NULL CONSTRAINT FK_Inscripcion_Equipo FOREIGN KEY REFERENCES Equipo(id_equipo) ON DELETE CASCADE,
     fecha_inscripcion  DATETIME2 NOT NULL CONSTRAINT DF_Inscripcion_fecha DEFAULT (SYSDATETIME()),
     estado             VARCHAR(15) NOT NULL CONSTRAINT DF_Inscripcion_estado DEFAULT ('Activo'),
     motivo_descalificacion  VARCHAR(250) NULL,
@@ -113,7 +114,7 @@ CREATE TABLE Inscripcion (
 
 CREATE TABLE Partido (
     id_partido            INT IDENTITY(1,1) CONSTRAINT PK_Partido PRIMARY KEY,
-    id_torneo             INT NOT NULL CONSTRAINT FK_Partido_Torneo FOREIGN KEY REFERENCES Torneo(id_torneo),
+    id_torneo             INT NOT NULL CONSTRAINT FK_Partido_Torneo FOREIGN KEY REFERENCES Torneo(id_torneo) ON DELETE CASCADE,
     nro_fase              INT NOT NULL,   -- 1 = primera fase; la mayor = final
     nro_llave             INT NOT NULL,   -- posici�n del cruce dentro de la fase
     id_arbitro            INT NULL CONSTRAINT FK_Partido_Arbitro FOREIGN KEY REFERENCES Arbitro(id_persona),
@@ -149,8 +150,8 @@ CREATE TABLE Partido (
 
 
 CREATE TABLE Alineacion_Partido (
-    id_partido  INT NOT NULL CONSTRAINT FK_Alineacion_Partido FOREIGN KEY REFERENCES Partido(id_partido),
-    id_jugador  INT NOT NULL CONSTRAINT FK_Alineacion_Jugador FOREIGN KEY REFERENCES Jugador(id_persona),
+    id_partido  INT NOT NULL CONSTRAINT FK_Alineacion_Partido FOREIGN KEY REFERENCES Partido(id_partido) ON DELETE CASCADE,
+    id_jugador  INT NOT NULL CONSTRAINT FK_Alineacion_Jugador FOREIGN KEY REFERENCES Jugador(id_persona) ON DELETE CASCADE,
     -- se implementa kda
     kills INT NOT NULL CONSTRAINT DF_Alineacion_Kills DEFAULT(0),
     deaths INT NOT NULL CONSTRAINT DF_Alineacion_Deaths DEFAULT(0),
@@ -165,7 +166,7 @@ CREATE TABLE Alineacion_Partido (
 
 CREATE TABLE Pago_Premio (
     id_pago     INT IDENTITY(1,1) CONSTRAINT PK_Pago_Premio PRIMARY KEY,
-    id_torneo   INT NOT NULL CONSTRAINT FK_Pago_Torneo  FOREIGN KEY REFERENCES Torneo(id_torneo),
+    id_torneo   INT NOT NULL CONSTRAINT FK_Pago_Torneo  FOREIGN KEY REFERENCES Torneo(id_torneo) ON DELETE CASCADE,
     id_jugador  INT NOT NULL CONSTRAINT FK_Pago_Jugador FOREIGN KEY REFERENCES Jugador(id_persona),
     tipo        VARCHAR(12) NOT NULL,
     monto       DECIMAL(12,2) NOT NULL,
@@ -177,7 +178,7 @@ CREATE TABLE Pago_Premio (
 
 CREATE TABLE Sancion (
     id_sancion INT IDENTITY(1,1) CONSTRAINT PK_Sancion PRIMARY KEY,
-    id_jugador INT NOT NULL CONSTRAINT FK_Sancion_Jugador FOREIGN KEY REFERENCES Jugador(id_persona),
+    id_jugador INT NOT NULL CONSTRAINT FK_Sancion_Jugador FOREIGN KEY REFERENCES Jugador(id_persona) ON DELETE CASCADE,
     motivo VARCHAR(250) NOT NULL,
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,
