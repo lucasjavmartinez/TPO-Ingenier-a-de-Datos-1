@@ -158,7 +158,10 @@ CREATE TABLE Alineacion_Partido (
     assists INT NOT NULL CONSTRAINT DF_Alineacion_Assists DEFAULT(0),
     id_equipo   INT NOT NULL CONSTRAINT FK_Alineacion_Equipo  FOREIGN KEY REFERENCES Equipo(id_equipo),
     CONSTRAINT PK_Alineacion_Partido PRIMARY KEY (id_partido, id_jugador),
-    CONSTRAINT CK_Alineacion_kda CHECK (kills >= 0 AND deaths >= 0 AND assists >= 0)
+    CONSTRAINT CK_Alineacion_kda CHECK (
+        kills >= 0 AND 
+        deaths BETWEEN 0 AND 30 AND
+        assists >= 0)
 );
 
 

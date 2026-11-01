@@ -103,3 +103,42 @@ BEGIN
     END CATCH
 END;
 GO
+
+
+--procedimiento 4: se crea para verificar que los atributos kda tengan sentido
+
+CREATE PROCEDURE sp_verificarKDA
+    @id_partido INT,
+    @id_jugador INT,
+    @kills INT,
+    @deaths INT,
+    @assists INT,
+    @id_equipo INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        BEGIN TRAN;
+        --aca verificamos si no se superan las 30 muertes
+        IF @deaths > 30
+        BEGIN
+            THROW 50022, 'No es posible tener mas de 30 muertes por partido', 1;
+        END
+        --aca verificamos si los atributos del kda no son negativos
+        IF @kills < 0 OR @deaths < 0 OR @assists < 0
+        BEGIN
+            THROW 50023, 'No es posible tener datos de KDA negativos', 1;
+        END
+        --si todo esta ok:
+        INSERT INTO Alineacion_Partido(id_partido, id_jugador, kills, deaths, assists, id_equipo)
+        VALUES(@id_partido, @id_jugador, @kills, @deaths, @assists, @id_equipo);
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRAN;
+        DECLARE @Error NVARCHAR(4000) = 'Fallo al momento de cargar los datos del kda: '+ ERROR_MESSAGE();
+        THROW 50024, @Error, 1;
+    END CATCH
+END;
+GO
